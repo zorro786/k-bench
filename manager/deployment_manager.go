@@ -63,6 +63,9 @@ type DeploymentManager struct {
 
 	// Action functions
 	ActionFuncs map[string]func(*DeploymentManager, interface{}) error
+
+	// Stats
+	TotalNumPodsCreated int
 }
 
 func NewDeploymentManager() Manager {

@@ -38,12 +38,16 @@ import (
 )
 
 const (
-	podNamespace string = "kbench-pod-namespace"
-	depNamespace string = "kbench-deployment-namespace"
-	ssNamespace  string = "kbench-statefulset-namespace"
-	svcNamespace string = "kbench-service-namespace"
-	rcNamespace  string = "kbench-rc-namespace"
-	resNamespace string = "kbench-resource-namespace"
+	podMgrNamespace    string = "kbench-pod-namespace"
+	podNamespacePrefix string = "kbench-pod-namespace-"
+	depMgrNamespace    string = "kbench-deployment-namespace"
+	depNamespacePrefix string = "kbench-deployment-namespace-"
+	ssNamespace        string = "kbench-statefulset-namespace"
+	svcNamespace       string = "kbench-service-namespace"
+	rcNamespace        string = "kbench-rc-namespace"
+	resNamespace       string = "kbench-resource-namespace"
+
+	maxPodsPerNamespace = 2000
 )
 
 const (

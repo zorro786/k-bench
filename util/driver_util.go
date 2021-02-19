@@ -49,7 +49,7 @@ func checkAndRunPod(
 		} else {
 			mgrs[manager.POD], _ = manager.GetManager(manager.POD)
 			podMgr = mgrs[manager.POD].(*manager.PodManager)
-			podMgr.Init(kubeConfig, podNamespace, true,
+			podMgr.Init(kubeConfig, podMgrNamespace, true,
 				maxClients[manager.POD], podType)
 		}
 
@@ -79,7 +79,7 @@ func checkAndRunDeployment(
 		} else {
 			mgrs[manager.DEPLOYMENT], _ = manager.GetManager(manager.DEPLOYMENT)
 			depMgr = mgrs[manager.DEPLOYMENT].(*manager.DeploymentManager)
-			depMgr.Init(kubeConfig, depNamespace,
+			depMgr.Init(kubeConfig, depMgrNamespace,
 				maxClients[manager.DEPLOYMENT], depType)
 		}
 
@@ -325,9 +325,11 @@ func runPodActions(
 
 	si := 0
 
+	nsList := make([]string, 0)
+
 	for _, action := range actions {
 		var lk, lv string
-		ns := podNamespace
+		ns := podNamespacePrefix
 
 		if podConfig.Namespace != "" {
 			ns = podConfig.Namespace
@@ -341,7 +343,12 @@ func runPodActions(
 			} else {
 				created = true
 			}
-
+			if podConfig.Namespace == "" {
+				ns = podNamespacePrefix + strconv.Itoa(mgr.TotalNumPodsCreated/maxPodsPerNamespace)
+			}
+			if (len(nsList) != 0 && nsList[len(nsList)-1] != ns) || len(nsList) == 0 {
+				nsList = append(nsList, ns)
+			}
 			var spec *apiv1.Pod
 			createSpec := action.Spec
 			updateLabelNs(createSpec, podConfig.LabelKey, podConfig.LabelValue, &ns, &lk, &lv)
@@ -399,6 +406,8 @@ func runPodActions(
 			ae := mgr.ActionFuncs[manager.CREATE_ACTION](mgr, spec)
 			if ae != nil {
 				log.Error(ae)
+			} else {
+				mgr.TotalNumPodsCreated += 1
 			}
 		} else if actStr == manager.RUN_ACTION {
 			runSpec := action.Spec
@@ -430,8 +439,11 @@ func runPodActions(
 			}
 		} else if actionFunc, ok := mgr.ActionFuncs[actStr]; ok {
 			lusdSpec := action.Spec
+			if len(nsList) > 0 {
+				ns = nsList[0]
+				nsList = nsList[1:]
+			}
 			updateLabelNs(lusdSpec, podConfig.LabelKey, podConfig.LabelValue, &ns, &lk, &lv)
-
 			as := manager.ActionSpec{
 				podName, tid, opNum, ns, lk, lv,
 				lusdSpec.MatchGoroutine, lusdSpec.MatchOperation, manager.POD}
@@ -471,9 +483,10 @@ func runDeploymentActions(
 
 	si := 0
 
+	nsList := make([]string, 0)
+
 	for _, action := range actions {
-		var lk, lv string
-		ns := depNamespace
+		var lk, lv, ns string
 
 		if depConfig.Namespace != "" {
 			ns = depConfig.Namespace
@@ -522,11 +535,17 @@ func runDeploymentActions(
 			} else {
 				// Name from yaml file are not respected to ensure integrity.
 				spec.Name = depName
-
+				if spec.Namespace != "" {
+					ns = depNamespacePrefix + strconv.Itoa(mgr.TotalNumPodsCreated/maxPodsPerNamespace)
+				}
 				if spec.Namespace == "" {
 					spec.Namespace = ns
 				} else {
 					ns = spec.Namespace
+				}
+
+				if (len(nsList) != 0 && nsList[len(nsList)-1] != ns) || len(nsList) == 0 {
+					nsList = append(nsList, ns)
 				}
 
 				// Selector is mandatory for apps v1 deployment spec
@@ -560,12 +579,17 @@ func runDeploymentActions(
 
 			if ae != nil {
 				log.Error(ae)
+			} else {
+				mgr.TotalNumPodsCreated += 1
 			}
 			// TODO: add RUN action?
 		} else if actionFunc, ok := mgr.ActionFuncs[actStr]; ok {
 			lusdSpec := action.Spec
+			if len(nsList) > 0 {
+				ns = nsList[0]
+				nsList = nsList[1:]
+			}
 			updateLabelNs(lusdSpec, depConfig.LabelKey, depConfig.LabelValue, &ns, &lk, &lv)
-
 			as := manager.ActionSpec{
 				depName, tid, opNum, ns, lk, lv,
 				lusdSpec.MatchGoroutine, lusdSpec.MatchOperation, manager.DEPLOYMENT}

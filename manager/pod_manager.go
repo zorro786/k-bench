@@ -103,6 +103,9 @@ type PodManager struct {
 	createToRunLatency, firstToSchedLatency   perf_util.OperationLatencyMetric
 	schedToInitdLatency, initdToReadyLatency  perf_util.OperationLatencyMetric
 	firstToReadyLatency, createToReadyLatency perf_util.OperationLatencyMetric
+
+	// Stats
+	TotalNumPodsCreated int
 }
 
 func NewPodManager() Manager {
@@ -298,9 +301,15 @@ func (mgr *PodManager) UpdateBeforeDeletion(name string, ns string) {
 			for _, event := range events.Items {
 				if event.Source.Component == apiv1.DefaultSchedulerName {
 					scheEvents[event.InvolvedObject.Name] = event.FirstTimestamp
-				} else if event.Reason == "Pulled" {
+				}  else if event.Reason == "Pulled" {
 					pulledEvents[event.InvolvedObject.Name] = event.FirstTimestamp
 				}
+				//if event.Reason == "Scheduled" {
+				//	log.Infof("Adding schedule event %v", event.FirstTimestamp)
+				//	scheEvents[event.InvolvedObject.Name] = event.FirstTimestamp
+				//} else if event.Reason == "Pulled" {
+				//	pulledEvents[event.InvolvedObject.Name] = event.FirstTimestamp
+				//}
 			}
 
 			for k := range mgr.createTimes {
@@ -694,7 +703,7 @@ func (mgr *PodManager) Delete(n interface{}) error {
 		if s.Namespace != "" {
 			ns = s.Namespace
 		}
-
+		log.Infof("Deleting pods in namespace: %v", ns)
 		pods := make([]apiv1.Pod, 0)
 
 		podList, err := mgr.clientsets[cid].CoreV1().Pods(ns).List(options)
@@ -1225,6 +1234,7 @@ func (mgr *PodManager) CalculateStats() {
 	var mid, min, max, p99 float32
 
 	if len(createToSche) > 0 {
+		log.Infof("Lenght of createToSche %v", len(createToSche))
 		mid = float32(createToSche[len(createToSche)/2]) / float32(time.Millisecond)
 		min = float32(createToSche[0]) / float32(time.Millisecond)
 		max = float32(createToSche[len(createToSche)-1]) / float32(time.Millisecond)
