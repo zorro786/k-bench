@@ -1,0 +1,31 @@
+{
+  "BlockingLevel": "operation",
+  "Timeout": 7200000,
+  "CheckingInterval": 3000,
+  "Cleanup": false,
+  "Operations": [
+    {
+      "Pods": {
+        "Actions": [
+          {
+            "Act": "CREATE",
+            "Spec": {
+              "YamlSpec": "../hello-world.yaml"
+            }
+          },
+          {
+            "Act": "GET"
+          },
+          {
+            "Act": "DELETE"
+          }
+        ],
+        "SleepTimes": [
+          10000
+        ],
+        "Count": 5
+      },
+      "RepeatTimes": 399
+    }
+  ]
+}

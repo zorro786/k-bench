@@ -1,0 +1,31 @@
+{
+  "BlockingLevel": "operation",
+  "Timeout": 7200000,
+  "CheckingInterval": 3000,
+  "Cleanup": false,
+  "Operations": [
+    {
+      "Deployments": {
+        "Actions": [
+          {
+            "Act": "CREATE",
+            "Spec": {
+              "YamlSpec": "../hello-world.yaml",
+              "NumReplicas": 5
+            }
+          },
+          {
+            "Act": "GET"
+          },
+          {
+            "Act": "LIST"
+          }
+        ],
+        "SleepTimes": [
+          10000
+        ]
+      },
+      "RepeatTimes": 66
+    }
+  ]
+}
