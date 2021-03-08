@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    test: hello-world
+  name: hello-world
+spec:
+  template:
+    metadata:
+      labels:
+        test: hello-world
+        mobile: "false"
+        net: webtier
+        svcname: test1
+        svctype: test2
+    spec:
+      containers:
+        - name: hello-world
+          image: paulbouwer/hello-kubernetes:1.9
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - wget
+                - -S
+                - -O
+                - "-"
+                - 127.0.0.1:8080
+            initialDelaySeconds: 0
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - wget
+                - -S
+                - -O
+                - "-"
+                - 127.0.0.1:8080
+            initialDelaySeconds: 0
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "1000m"
+            limits:
+              memory: "100Mi"
+              cpu: "1000m"

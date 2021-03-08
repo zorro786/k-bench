@@ -3,6 +3,10 @@ kind: Pod
 metadata:
   labels:
     test: hello-world
+    mobile: "false"
+    net: webtier
+    svcname: test1
+    svctype: test2
   name: hello-world
 spec:
   containers:

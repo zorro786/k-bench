@@ -10,8 +10,8 @@
           {
             "Act": "CREATE",
             "Spec": {
-              "YamlSpec": "../hello-world-deployment.yaml",
-              "NumReplicas": 30
+              "Image": "paulbouwer/hello-kubernetes:1.9",
+              "NumReplicas": 5
             }
           },
           {
@@ -19,11 +19,10 @@
           }
         ],
         "SleepTimes": [
-          10000
+          30000
         ],
-        "Count": 5
-      },
-      "RepeatTimes": 13
+        "Count": 1
+      }
     }
   ]
 }

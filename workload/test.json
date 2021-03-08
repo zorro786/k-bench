@@ -5,12 +5,13 @@
   "Cleanup": false,
   "Operations": [
     {
-      "Pods": {
+      "Deployments": {
         "Actions": [
           {
             "Act": "CREATE",
             "Spec": {
-              "YamlSpec": "./hello-world.yaml"
+              "YamlSpec": "./hello-world-deployment.yaml",
+              "NumReplicas": 5
             }
           },
           {
@@ -20,9 +21,9 @@
         "SleepTimes": [
           30000
         ],
-        "Count": 5
+        "Count": 2
       },
-      "RepeatTimes": 1
+      "RepeatTimes": 0
     }
   ]
 }

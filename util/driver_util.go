@@ -516,9 +516,12 @@ func runDeploymentActions(
 			}
 
 			if spec == nil {
+				ns = depNamespacePrefix + strconv.Itoa(mgr.TotalNumPodsCreated/maxPodsPerNamespace)
 				as := manager.ActionSpec{depName, tid, opNum, ns, lk,
 					lv, true, "", manager.DEPLOYMENT}
-
+				if (len(nsList) != 0 && nsList[len(nsList)-1] != ns) || len(nsList) == 0 {
+					nsList = append(nsList, ns)
+				}
 				if createSpec.ImagePullPolicy == "Always" {
 					spec = genDeploymentSpec(createSpec.Image,
 						createSpec.NumReplicas, apiv1.PullAlways,
@@ -535,10 +538,8 @@ func runDeploymentActions(
 			} else {
 				// Name from yaml file are not respected to ensure integrity.
 				spec.Name = depName
-				if spec.Namespace != "" {
+				if spec.Namespace == "" || spec.Namespace == "default" {
 					ns = depNamespacePrefix + strconv.Itoa(mgr.TotalNumPodsCreated/maxPodsPerNamespace)
-				}
-				if spec.Namespace == "" {
 					spec.Namespace = ns
 				} else {
 					ns = spec.Namespace
@@ -572,6 +573,10 @@ func runDeploymentActions(
 					spec.Spec.Selector.MatchLabels[lk] = lv
 					spec.Spec.Template.ObjectMeta.Labels[lk] = lv
 					spec.Labels[lk] = lv
+				}
+
+				if createSpec.NumReplicas != 0 {
+					spec.Spec.Replicas = &createSpec.NumReplicas
 				}
 			}
 

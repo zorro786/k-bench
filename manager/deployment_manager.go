@@ -389,7 +389,7 @@ func (mgr *DeploymentManager) Delete(n interface{}) error {
 		if s.Namespace != "" {
 			ns = s.Namespace
 		}
-
+		log.Infof("Deleting deployment with namespace: %v", ns)
 		selector := fields.Set{
 			"metadata.namespace": ns,
 		}.AsSelector().String()

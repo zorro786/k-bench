@@ -10,8 +10,8 @@
           {
             "Act": "CREATE",
             "Spec": {
-              "YamlSpec": "../hello-world.yaml",
-              "NumReplicas": 5
+              "YamlSpec": "../hello-world-deployment.yaml",
+              "NumReplicas": 200
             }
           },
           {

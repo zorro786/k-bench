@@ -10,8 +10,8 @@
           {
             "Act": "CREATE",
             "Spec": {
-              "YamlSpec": "../hello-world.yaml",
-              "NumReplicas": 5
+              "YamlSpec": "../hello-world-deployment.yaml",
+              "NumReplicas": 30
             }
           },
           {
@@ -24,9 +24,9 @@
         "SleepTimes": [
           10000
         ],
-        "Count": 15
+        "Count": 5
       },
-      "RepeatTimes": 12
+      "RepeatTimes": 13
     }
   ]
 }
