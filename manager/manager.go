@@ -156,7 +156,7 @@ func GetListOptions(s ActionSpec) metav1.ListOptions {
 		filters["app"] = AppName
 	}
 	if len(filters) == 0 {
-		selector := fields.Set{"metadata.name": s.Name}.AsSelector().String()
+		selector := fields.Set{"metadata.namespace": s.Namespace}.AsSelector().String()
 		options := metav1.ListOptions{FieldSelector: selector}
 		return options
 	} else {

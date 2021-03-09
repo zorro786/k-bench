@@ -441,7 +441,9 @@ func runPodActions(
 			lusdSpec := action.Spec
 			if len(nsList) > 0 {
 				ns = nsList[0]
-				nsList = nsList[1:]
+				if actStr == manager.DELETE_ACTION {
+					nsList = nsList[1:]
+				}
 			}
 			updateLabelNs(lusdSpec, podConfig.LabelKey, podConfig.LabelValue, &ns, &lk, &lv)
 			as := manager.ActionSpec{
@@ -592,7 +594,9 @@ func runDeploymentActions(
 			lusdSpec := action.Spec
 			if len(nsList) > 0 {
 				ns = nsList[0]
-				nsList = nsList[1:]
+				if actStr == manager.DELETE_ACTION {
+					nsList = nsList[1:]
+				}
 			}
 			updateLabelNs(lusdSpec, depConfig.LabelKey, depConfig.LabelValue, &ns, &lk, &lv)
 			as := manager.ActionSpec{
