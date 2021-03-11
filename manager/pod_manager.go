@@ -436,15 +436,13 @@ func (mgr *PodManager) List(n interface{}) error {
 		log.Errorf("Invalid spec type %T for Pod list action.", s)
 		return fmt.Errorf("Invalid spec type %T for Pod list action.", s)
 	case ActionSpec:
-		options := GetListOptions(s)
-
+		options := GetListOptionsWithNamespace(s)
 		cid := s.Tid % len(mgr.clientsets)
 
 		ns := mgr.namespace
 		if s.Namespace != "" {
 			ns = s.Namespace
 		}
-
 		startTime := metav1.Now()
 		pods, err := mgr.clientsets[cid].CoreV1().Pods(ns).List(options)
 		latency := metav1.Now().Time.Sub(startTime.Time).Round(time.Microsecond)

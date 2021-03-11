@@ -156,6 +156,30 @@ func GetListOptions(s ActionSpec) metav1.ListOptions {
 		filters["app"] = AppName
 	}
 	if len(filters) == 0 {
+		selector := fields.Set{"metadata.name": s.Name}.AsSelector().String()
+		options := metav1.ListOptions{FieldSelector: selector}
+		return options
+	} else {
+		selector := labels.Set(filters).AsSelector().String()
+		options := metav1.ListOptions{LabelSelector: selector}
+		return options
+	}
+}
+
+func GetListOptionsWithNamespace(s ActionSpec) metav1.ListOptions {
+	filters := make(map[string]string, 0)
+	if s.LabelKey != "" && s.LabelValue != "" {
+		filters[s.LabelKey] = s.LabelValue
+	}
+	if s.MatchGoroutine == true {
+		filters["tid"] = strconv.Itoa(s.Tid)
+	}
+	if strings.ToLower(s.MatchOperation) == CURR_OPERATION {
+		filters["opnum"] = strconv.Itoa(s.Oid)
+	} else if strings.ToLower(s.MatchOperation) == ALL_OPERATION {
+		filters["app"] = AppName
+	}
+	if len(filters) == 0 {
 		selector := fields.Set{"metadata.namespace": s.Namespace}.AsSelector().String()
 		options := metav1.ListOptions{FieldSelector: selector}
 		return options

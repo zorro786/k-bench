@@ -211,7 +211,7 @@ func (mgr *DeploymentManager) List(n interface{}) error {
 		log.Errorf("Invalid spec type %T for Deployment list action.", s)
 		return fmt.Errorf("Invalid spec type %T for Deployment list action.", s)
 	case ActionSpec:
-		options := GetListOptions(s)
+		options := GetListOptionsWithNamespace(s)
 
 		cid := s.Tid % len(mgr.clientsets)
 

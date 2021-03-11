@@ -328,8 +328,7 @@ func runPodActions(
 	nsList := make([]string, 0)
 
 	for _, action := range actions {
-		var lk, lv string
-		ns := podNamespacePrefix
+		var lk, lv, ns string
 
 		if podConfig.Namespace != "" {
 			ns = podConfig.Namespace
