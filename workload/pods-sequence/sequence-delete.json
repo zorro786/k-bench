@@ -8,15 +8,12 @@
       "Pods": {
         "Actions": [
           {
-            "Act": "DELETE"
-          }
-        ],
-        "SleepTimes": [
-          10000
+            "Act": "DELETE",
+            "Spec": {"Namespace": "kbench-pod-namespace-0"}
+            }
         ],
         "Count": 1
-      },
-      "RepeatTimes": 1999
+      }
     }
   ]
 }
