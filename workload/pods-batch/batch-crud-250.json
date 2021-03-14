@@ -5,16 +5,22 @@
   "Cleanup": false,
   "Operations": [
     {
-      "Deployments": {
+      "Pods": {
         "Actions": [
+          {
+            "Act": "CREATE",
+            "Spec": {
+              "YamlSpec": "../hello-world.yaml"
+            }
+          },
           {
             "Act": "DELETE"
           }
         ],
         "SleepTimes": [
-          10000
+          30000
         ],
-        "Count": 200
+        "Count": 250
       },
       "RepeatTimes": 9
     }
